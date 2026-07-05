@@ -242,4 +242,59 @@ printf("Ingrese el anio de la cita: ");
 
     guardar_citas(citas, *num_citas);
 }
-    
+    void listar_citas(Cita citas[], int num_citas)
+{
+    int i;
+
+    if(num_citas == 0)
+    {
+        printf("\nNo hay citas registradas\n");
+        return;
+    }
+
+    printf("\n%-8s %-20s %-18s %-12s %-6s %-20s\n",
+           "Codigo", "Paciente", "Especialidad", "Fecha", "Hora", "Medico");
+
+    for(i = 0; i < num_citas; i++)
+    {
+        printf("%-8s %-20s %-18s %-12s %-6s %-20s\n",
+               citas[i].codigo, citas[i].paciente, citas[i].especialidad,
+               citas[i].fecha, citas[i].hora, citas[i].medico);
+    }
+}
+
+void buscar_cita(Cita citas[], int num_citas)
+{
+    char texto[50];
+    int i, encontrado = 0;
+
+    printf("\nIngrese el codigo o parte del nombre del paciente: ");
+    scanf(" %49[^\n]", texto);
+
+    for(i = 0; i < num_citas; i++)
+    {
+        if(strcmp(citas[i].codigo, texto) == 0 || strstr(citas[i].paciente, texto) != NULL)
+        {
+            printf("%s %s %s %s %s %s\n",
+                   citas[i].codigo, citas[i].paciente, citas[i].especialidad,
+                   citas[i].fecha, citas[i].hora, citas[i].medico);
+            encontrado = 1;
+        }
+    }
+
+    if(encontrado == 0)
+    {
+        printf("No se encontraron coincidencias\n");
+    }
+}
+
+void eliminar_cita(Cita citas[], int *num_citas)
+{
+    char codigo[16];
+    char confirmar;
+    int indice, i;
+
+    printf("\nIngrese el codigo de la cita a eliminar: ");
+    scanf("%15s", codigo);
+
+    indice = buscar_indice(citas, *num_citas, codigo);
