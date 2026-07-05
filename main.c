@@ -168,5 +168,78 @@ void registrar_cita(Cita citas[], int *num_citas, Doctor doctores[], int num_doc
         printf("Ingrese el mes de la cita (1-12): ");
         scanf("%d", &mes);
     }
+printf("Ingrese el anio de la cita: ");
+    scanf("%d", &anio);
+    while(anio < 2024 || anio > 2100)
+    {
+        printf("Anio no valido, debe estar entre 2024 y 2100\n");
+        printf("Ingrese el anio de la cita: ");
+        scanf("%d", &anio);
+    }
 
+    sprintf(fecha, "%02d/%02d/%04d", dia, mes, anio);
+
+    printf("Ingrese la hora de la cita (9-20, horario de 9am a 8pm): ");
+    scanf("%d", &hora);
+    while(hora < 9 || hora > 20)
+    {
+        printf("Hora no valida, el consultorio atiende de 9am a 8pm (9-20)\n");
+        printf("Ingrese la hora de la cita (9-20): ");
+        scanf("%d", &hora);
+    }
+
+    printf("Ingrese los minutos de la cita (0-59): ");
+    scanf("%d", &minutos);
+    while(minutos < 0 || minutos > 59)
+    {
+        printf("Minutos no validos, deben estar entre 0 y 59\n");
+        printf("Ingrese los minutos de la cita (0-59): ");
+        scanf("%d", &minutos);
+    }
+
+    /* si la hora es exactamente las 8pm, solo se permite la hora en punto */
+    if(hora == 20 && minutos > 0)
+    {
+        printf("El ultimo horario disponible es a las 8:00pm en punto\n");
+        return;
+    }
+
+    sprintf(hora_texto, "%02d:%02d", hora, minutos);
+
+    if(horario_ocupado(citas, *num_citas, fecha, hora_texto))
+    {
+        printf("Ya existe una cita en esa fecha y hora\n");
+        return;
+    }
+
+    printf("\nLista de doctores:\n");
+    for(i = 0; i < num_doctores; i++)
+    {
+        printf("%d. %s - %s\n", i + 1, doctores[i].nombre, doctores[i].especialidad);
+    }
+
+    printf("Seleccione el numero del doctor: ");
+    scanf("%d", &doctor_seleccionado);
+
+    while(doctor_seleccionado < 1 || doctor_seleccionado > num_doctores)
+    {
+        printf("Doctor no valido\n");
+        printf("Seleccione el numero del doctor: ");
+        scanf("%d", &doctor_seleccionado);
+    }
+
+    generar_codigo(citas, *num_citas, doctores[doctor_seleccionado - 1].letra, codigo);
+
+    strcpy(citas[*num_citas].codigo, codigo);
+    strcpy(citas[*num_citas].fecha, fecha);
+    strcpy(citas[*num_citas].hora, hora_texto);
+    strcpy(citas[*num_citas].medico, doctores[doctor_seleccionado - 1].nombre);
+    strcpy(citas[*num_citas].especialidad, doctores[doctor_seleccionado - 1].especialidad);
+
+    (*num_citas)++;
+
+    printf("Cita registrada correctamente con el codigo %s\n", codigo);
+
+    guardar_citas(citas, *num_citas);
+}
     
