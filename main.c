@@ -24,6 +24,14 @@ int main()
     Cita citas[100];
     int num_citas = 0;
 
+    Doctor doctores[5] = {
+        {"Dra. Torres", "Medicina General", 'M'},
+        {"Dr. Garcia", "Pediatria", 'P'},
+        {"Dra. Sanchez", "Cardiologia", 'C'},
+        {"Dr. Martinez", "Dermatologia", 'D'},
+        {"Dra. Lopez", "Ginecologia", 'G'}
+    };
+
     do{
      printf("\n Sistema de citas medicas \n\n");
     printf("1. Registrar cita\n");
