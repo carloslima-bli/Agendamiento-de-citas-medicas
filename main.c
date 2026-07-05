@@ -17,6 +17,7 @@ typedef struct
     char hora[6];
     char medico[50];
 } Cita;
+void cargar_citas(Cita citas[], int *num_citas);
 
 int main()
 {
@@ -31,6 +32,8 @@ int main()
         {"Dr. Martinez", "Dermatologia", 'D'},
         {"Dra. Lopez", "Ginecologia", 'G'}
     };
+
+    cargar_citas(citas, &num_citas);
 
     do{
      printf("\n Sistema de citas medicas \n\n");
@@ -66,4 +69,47 @@ int main()
     } while(opcion != 5);
 
     return 0;
+}
+void cargar_citas(Cita citas[], int *num_citas)
+{
+    FILE *archivo;
+    char linea[200];
+    char *token;
+ 
+    archivo = fopen("citas.csv", "r");
+ 
+    if(archivo == NULL)
+    {
+        printf("No existe el archivo citas.csv todavia\n");
+        return;
+    }
+ 
+    fgets(linea, sizeof(linea), archivo); /* saltar la cabecera */
+ 
+    *num_citas = 0;
+    while(fgets(linea, sizeof(linea), archivo) != NULL)
+    {
+        token = strtok(linea, ",");
+        strcpy(citas[*num_citas].codigo, token);
+ 
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].paciente, token);
+ 
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].especialidad, token);
+ 
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].fecha, token);
+ 
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].hora, token);
+ 
+        token = strtok(NULL, "\n");
+        strcpy(citas[*num_citas].medico, token);
+ 
+        (*num_citas)++;
+    }
+ 
+    fclose(archivo);
+    printf("Se cargaron %d cita(s) desde citas.csv\n", *num_citas);
 }
