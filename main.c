@@ -368,10 +368,16 @@ void cargar_citas(Cita citas[], int *num_citas)
     }
 
     fgets(linea, sizeof(linea), archivo); /* saltar la cabecera */
-
     *num_citas = 0;
     while(fgets(linea, sizeof(linea), archivo) != NULL)
     {
+        lineas_leidas++;
+        linea[strcspn(linea, "\n")] = 0; /* eliminar el salto de linea */
+        if(strlen(linea) == 0)
+        {
+            lineas_ignoradas++;
+            continue; /* ignorar lineas vacias */
+        }
         token = strtok(linea, ",");
         strcpy(citas[*num_citas].codigo, token);
 
