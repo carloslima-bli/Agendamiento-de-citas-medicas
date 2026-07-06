@@ -298,3 +298,101 @@ void eliminar_cita(Cita citas[], int *num_citas)
     scanf("%15s", codigo);
 
     indice = buscar_indice(citas, *num_citas, codigo);
+
+    if(indice == -1)
+    {
+        printf("No existe una cita con ese codigo\n");
+        return;
+    }
+
+    printf("Esta seguro que desea eliminarla? (s/n): ");
+    scanf(" %c", &confirmar);
+
+    if(confirmar != 's' && confirmar != 'S')
+    {
+        printf("Eliminacion cancelada\n");
+        return;
+    }
+
+    for(i = indice; i < *num_citas - 1; i++)
+    {
+        citas[i] = citas[i + 1];
+    }
+
+    (*num_citas)--;
+    printf("Cita eliminada correctamente\n");
+
+    guardar_citas(citas, *num_citas);
+}
+
+void guardar_citas(Cita citas[], int num_citas)
+{
+    FILE *archivo;
+    int i;
+
+    archivo = fopen("citas.csv", "w");
+
+    if(archivo == NULL)
+    {
+        printf("No se pudo abrir el archivo citas.csv\n");
+        return;
+    }
+
+    fprintf(archivo, "codigo_cita,nombre_paciente,especialidad,fecha,hora,medico\n");
+
+    for(i = 0; i < num_citas; i++)
+    {
+        fprintf(archivo, "%s,%s,%s,%s,%s,%s\n",
+                citas[i].codigo, citas[i].paciente, citas[i].especialidad,
+                citas[i].fecha, citas[i].hora, citas[i].medico);
+    }
+
+    fclose(archivo);
+    printf("Datos guardados en citas.csv\n");
+}
+
+void cargar_citas(Cita citas[], int *num_citas)
+{
+    FILE *archivo;
+    char linea[200];
+    char *token;
+    int lineas_leidas = 0;
+    int lineas_ignoradas = 0;
+
+    archivo = fopen("citas.csv", "r");
+
+    if(archivo == NULL)
+    {
+        printf("No existe el archivo citas.csv todavia\n");
+        return;
+    }
+
+    fgets(linea, sizeof(linea), archivo); /* saltar la cabecera */
+
+    *num_citas = 0;
+    while(fgets(linea, sizeof(linea), archivo) != NULL)
+    {
+        token = strtok(linea, ",");
+        strcpy(citas[*num_citas].codigo, token);
+
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].paciente, token);
+
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].especialidad, token);
+
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].fecha, token);
+
+        token = strtok(NULL, ",");
+        strcpy(citas[*num_citas].hora, token);
+
+        token = strtok(NULL, "\n");
+        strcpy(citas[*num_citas].medico, token);
+
+        (*num_citas)++;
+    }
+
+    fclose(archivo);
+    printf("Se cargaron %d cita(s) desde citas.csv\n", *num_citas);
+}
