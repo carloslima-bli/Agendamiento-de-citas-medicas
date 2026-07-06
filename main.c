@@ -379,26 +379,39 @@ void cargar_citas(Cita citas[], int *num_citas)
             continue; /* ignorar lineas vacias */
         }
         token = strtok(linea, ",");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].codigo, token);
 
         token = strtok(NULL, ",");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].paciente, token);
 
         token = strtok(NULL, ",");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].especialidad, token);
 
         token = strtok(NULL, ",");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].fecha, token);
 
         token = strtok(NULL, ",");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].hora, token);
 
         token = strtok(NULL, "\n");
+        if(token == NULL) {lineas_ignoradas++; continue;}
         strcpy(citas[*num_citas].medico, token);
 
         (*num_citas)++;
     }
 
     fclose(archivo);
-    printf("Se cargaron %d cita(s) desde citas.csv\n", *num_citas);
+    printf("\n--- Reporte de Carga de Archivo ---\n");
+    printf("Lineas procesadas: %d\n", lineas_leidas);
+    printf("Citas cargadas con exito: %d\n", *num_citas);
+    if(lineas_ignoradas > 0)
+    {
+        printf("Advertencia: Se omitieron %d lineas con formato incorrecto o incompletas\n", lineas_ignoradas);
+    }
+    
 }
